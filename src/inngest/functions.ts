@@ -13,6 +13,54 @@ interface AgentState {
   }
 }
 
+// export const getTitleFunction = inngest.createFunction(
+//   { id: "title-generator" },
+//   { event: "title-generator/generate" },
+//   async ({ event }) => {
+//     const titleGenerator = createAgent({
+//       name: "Title Generator",
+//       description: "An expert Title Generator for the given Prompt",
+//       system: "Given the user prompt, Create a 2-3 words title. The Title should not exceed 2-3 words and should summarize the given user prompt.",
+//       model: openai({
+//         model: "gpt-4.1",
+//         defaultParameters: {
+//           temperature: 0.1
+//         }
+//       }),
+//       lifecycle: {
+//         onResponse: async ({ result, network }) => {
+//           if (network) {
+//             const title = result.output;
+//             if (title.length > 0) {
+//               network.state.data.title = title;
+//             }
+//           }
+//           return result;
+//         }
+//       }
+//     });
+
+//     const network = createNetwork({
+//       name: "title-generator-network",
+//       maxIter: 15,
+//       agents: [titleGenerator],
+//     })
+//     const result = await network.run(event.data.prompt);
+    
+//     const isError = !result.state.data.title || result.state.data.title.length == 0;
+
+//     if (isError) {
+//       return {
+//         title: "Generation Failed"
+//       }
+//     }
+//     return {
+//       title: result.state.data.title
+//     }
+
+//   }
+// );
+
 export const codeAgentFunction = inngest.createFunction(
   { id: "code-agent" },
   { event: "code-agent/run" },
@@ -157,6 +205,7 @@ export const codeAgentFunction = inngest.createFunction(
       if (isError) {
         return await prisma.message.create({
           data: {
+            projectId: event.data.projectId,
             content: "Something went wrong. Please try again.",
             type: "ERROR",
             role: "ASSISTANT"
@@ -165,6 +214,7 @@ export const codeAgentFunction = inngest.createFunction(
       }
       await prisma.message.create({
         data: {
+          projectId: event.data.projectId,
           content: result.state.data.summary,
           role: "ASSISTANT",
           type: "RESULT",
