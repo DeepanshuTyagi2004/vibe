@@ -3,16 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 
 const Page = () => {
+  const router = useRouter();
   const [value, setValue] = useState("");
   const trpc = useTRPC();
   const project = useMutation(trpc.projects.create.mutationOptions({
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Message Created!");
+      router.push(`/projects/${data.id}`);
     },
     onError: (e) => {
       toast.error("Something went wrong: " + e);
