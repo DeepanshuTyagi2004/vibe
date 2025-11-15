@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpIcon, Loader2Icon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { PROJECT_TEMPLATES } from "../constants";
+import { PROJECT_TEMPLATES } from "../../constants";
+import { useClerk } from "@clerk/nextjs";
 
 
 const formSchema = z.object({
@@ -20,6 +21,7 @@ const formSchema = z.object({
 export const ProjectForm = () => {
   const router = useRouter();
   const [isFocused, setIsFocused] = useState(false);
+  const clerk = useClerk();
 
   
 
@@ -40,6 +42,9 @@ export const ProjectForm = () => {
 
     onError: (error) => {
       toast.error(error.message);
+      if (error?.data?.code === "UNAUTHORIZED") {
+        clerk.openSignIn();
+      }
     }
   }))
 
