@@ -15,21 +15,23 @@ interface Props{
 export const MessagesContainer = ({ projectId, activeFragment, setActiveFragment }: Props) => {
   const trpc = useTRPC();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<string | null>(null);
   const { data: messages } = useSuspenseQuery(trpc.messages.getMany.queryOptions({
     projectId: projectId
   }, {
     refetchInterval: 5000
   }));
 
-  // useEffect(() => {
-  //   const lastAssistantMessageWithFragment = messages.findLast((message) => {
-  //     return message.role === "ASSISTANT" && message.fragment
-  //   });
+  useEffect(() => {
+    const lastAssistantMessageWithFragment = messages.findLast((message) => {
+      return message.role === "ASSISTANT" && message.fragment
+    });
 
-  //   if (lastAssistantMessageWithFragment) {
-  //     setActiveFragment(lastAssistantMessageWithFragment.fragment);
-  //   }
-  // }, [messages, setActiveFragment]);
+    if (lastAssistantMessageWithFragment?.id !== lastMessageRef.current) {
+      setActiveFragment(lastAssistantMessageWithFragment?.fragment ?? null);
+      lastMessageRef.current = lastAssistantMessageWithFragment?.id ?? null;
+    }
+  }, [messages, setActiveFragment]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView();
