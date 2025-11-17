@@ -1,3 +1,4 @@
+"use client";
 import { useTRPC } from "@/trpc/client"
 import { useForm } from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod"
@@ -11,7 +12,7 @@ import { ArrowUpIcon, Loader2Icon } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Usage from "./usage";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Props{
   projectId: string
@@ -64,7 +65,7 @@ export const MessageForm = ({ projectId }: Props) => {
   return <Form {...form}>
     {showUsage && <Usage
       points={usage.remainingPoints}
-      msBeforeNext={usage.remainingPoints}
+      msBeforeNext={usage.msBeforeNext}
     />}
     <form
       onSubmit={form.handleSubmit(onSubmit)}

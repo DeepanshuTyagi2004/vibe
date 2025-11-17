@@ -11,6 +11,7 @@ import Link from 'next/link';
 import React from 'react'
 
 const Usage = ({ points, msBeforeNext }: Props) => {
+  console.log(msBeforeNext);
   const { has } = useAuth();
   const hasProAccess = has?.({ plan: "pro" });
   return (
