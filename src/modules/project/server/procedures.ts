@@ -1,5 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db";
+import { consumeCredits } from "@/lib/usage";
 import { protectedProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { generateSlug } from "random-word-slugs";
@@ -58,6 +59,19 @@ export const projectRouter = createTRPCRouter({
           }
         }
       });
+
+      try {
+        await consumeCredits();
+      } catch (error) {
+        if (error instanceof Error) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Something went wrong!" });
+        } else {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "You ran out of credits!"
+          })
+        }
+      }
 
       await inngest.send({
         name: "code-agent/run",
