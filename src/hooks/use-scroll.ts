@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 
-const useScroll = (threshold = 10) => {
+const useScroll = (threshold = 0) => {
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > threshold);
+      setIsScrolled(window.scrollY >= threshold);
     }
 
     window.addEventListener("scroll", handleScroll);
