@@ -29,7 +29,8 @@ const Page = () => {
           appearance={{
             baseTheme: currentTheme === "dark" ? dark: undefined,
             elements: {
-              pricingTableCard: "border! shadow-none! rounded-lg!"
+              pricingTableCard: "border! shadow-none! rounded-lg!",
+              subscriptionDetailsCardBody: "z-50!",
             }
           }}
         />
